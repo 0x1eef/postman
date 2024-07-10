@@ -36,7 +36,7 @@ progress bar is removed once the delivery is complete:
 ```typescript
 import postman, { item } from "postman";
 document.addEventListener("DOMContentLoaded", () => {
-  const progressBar = document.querySelector("progress")
+  const progressBar = document.querySelector("progress");
   const span = document.querySelector(".percentage");
   postman(
     item.font("Kanit Regular", "url(/fonts/kanit-regular.ttf)"),
@@ -56,8 +56,8 @@ document.addEventListener("DOMContentLoaded", () => {
       /* Replace progress bar */
       progressBar.remove();
       span.remove();
-   })
-})
+   });
+});
 ```
 
 ## License
