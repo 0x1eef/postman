@@ -60,6 +60,11 @@ document.addEventListener("DOMContentLoaded", () => {
 });
 ```
 
+## Sources
+
+* [GitHub](https://github.com/0x1eef/postman)
+* [GitLab](https://gitlab.com/0x1eef/postman)
+
 ## License
 
 [BSD Zero Clause](https://choosealicense.com/licenses/0bsd/)
