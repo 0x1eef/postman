@@ -1,8 +1,8 @@
 ## About
 
 Postman delivers the assets of a web page. <br>
-The library is typically paired with a progress bar
-that reports progress to the client.
+The library is typically paired with a progress
+bar that reports progress to the client.
 
 ## Examples
 
