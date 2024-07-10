@@ -2,7 +2,7 @@ import type { Item, FontItem } from './postman/item';
 import item from './postman/item';
 import request from './postman/request';
 
-type Postman = { fetch: () => Promise<Package> };
+type Postman = { deliver: () => Promise<Package> };
 type Args = Array<Item | FontItem | Function>
 type Items = Array<Item | FontItem>;
 type Package = {
@@ -65,7 +65,7 @@ export default function (...args: Args) {
     return reqs as Array<Promise<Package>>;
   };
 
-  self.fetch = async () => {
+  self.deliver = async () => {
     await Promise.all<Package>(spawnRequests());
     return result;
   };

@@ -47,7 +47,7 @@ document.addEventListener("DOMContentLoaded", () => {
       progressBar.value = percent;
       span.innerText = `${percent}%`;
     })
-  ).fetch()
+  ).deliver()
    .then((package) => {
       /* Add page assets */
       package.fonts.forEach((font) => documents.fonts.add(font));
