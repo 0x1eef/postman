@@ -64,7 +64,7 @@ document.addEventListener("DOMContentLoaded", () => {
 ## See also
 
 * [https://al-quran.reflectslight.io/](https://al-quran.reflectslight.io) <br>
-  Downloads assets with Postman
+  Delivers all of its assets with Postman
   
 ## Sources
 
