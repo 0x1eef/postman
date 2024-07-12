@@ -32,6 +32,7 @@ export { item };
 
 export default function (...args: Args): Postman {
   const self = Object.create(null);
+  const [items, progresscb] = parseArgs(args);
   const _package: Package = {
     fonts: [],
     images: [],
@@ -39,7 +40,6 @@ export default function (...args: Args): Postman {
     scripts: [],
     json: [],
   };
-  const [items, progresscb] = parseArgs(args);
 
   let index = 0;
   function onProgress<T>(el: T): T {
