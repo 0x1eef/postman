@@ -19,7 +19,7 @@ progress bar is removed once the delivery is complete:
 <html>
 <head>
   <title>Postman</title>
-  <script type="module" src="/postman.js"></script>
+  <script type="module" src="delivery.js"></script>
 </head>
 <body>
   <div class="postman loader">
@@ -31,7 +31,7 @@ progress bar is removed once the delivery is complete:
 </html>
 ```
 
-**postman.js**
+**delivery.js**
 
 ```typescript
 import postman, { item } from "postman";
