@@ -70,6 +70,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
 * [GitHub](https://github.com/0x1eef/postman)
 * [GitLab](https://gitlab.com/0x1eef/postman)
+* [brew.bsd.cafe/@0x1eef](https://brew.bsd.cafe/@0x1eef)
 
 ## License
 
