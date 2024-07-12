@@ -8,7 +8,9 @@
   ],
   "scripts": {
     "build": "npm exec tsc",
-    "prepare": "npm run build"
+    "prepare": "npm run build",
+    "tsc": "npm exec tsc -- --noEmit",
+    "eslint": "npm exec eslint -- src/*.ts src/**/*.ts"
   },
   "repository": {
     "type": "git",

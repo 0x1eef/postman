@@ -25,51 +25,55 @@ function parseArgs(args: Args): [Items, (n: number) => number] {
       items.push(item);
     }
   });
-  return [items, progresscb];
+  return [items.sort((i1, i2) => (i1.priority >= i2.priority ? 1 : -1)), progresscb];
 }
 
 export { item };
 
 export default function (...args: Args): Postman {
-  const self: Postman = Object.create(null);
-  const result: Package = { fonts: [], images: [], css: [], scripts: [], json: [] };
+  const self = Object.create(null);
+  const _package: Package = {
+    fonts: [],
+    images: [],
+    css: [],
+    scripts: [],
+    json: [],
+  };
   const [items, progresscb] = parseArgs(args);
-  items.sort((i1, i2) => (i1.priority >= i2.priority ? 1 : -1));
 
   let index = 0;
-  const onProgress = <T>(el: T): T => {
+  function onProgress<T>(el: T): T {
     index++;
     if (index <= items.length) {
       progresscb(100 * (index / items.length));
     }
     return el;
-  };
+  }
 
-  const spawnRequests = (): Array<Promise<Package | null>> => {
-    const reqs = items.map(async (item: Item | FontItem) => {
+  function fetch(): Array<Promise<Package | null>> {
+    return items.map(async (item: Item | FontItem) => {
       if ("fontFamily" in item) {
         const req = request.font;
         return await req(item)
           .then(el => onProgress<FontFace>(el))
-          .then(font => result.fonts.push(font))
-          .then(() => result);
+          .then(font => _package.fonts.push(font))
+          .then(() => _package);
       } else if (item.requestId !== "font" && item.group !== "fonts") {
         const req = request[item.requestId];
-        const ary = result[item.group];
+        const ary = _package[item.group];
         return await req(item)
           .then(el => onProgress<HTMLElement>(el))
           .then(el => ary.push(el))
-          .then(() => result);
+          .then(() => _package);
       } else {
         return null;
       }
     });
-    return reqs;
-  };
+  }
 
   self.deliver = async () => {
-    await Promise.all(spawnRequests());
-    return result;
+    await Promise.all(fetch());
+    return _package;
   };
 
   return self;
