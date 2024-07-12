@@ -20,13 +20,30 @@ progress bar is removed once the delivery is complete:
 <head>
   <title>Postman</title>
   <script type="module" src="delivery.js"></script>
+  <style>
+    html, html body { height: 100%; }
+    main.postman {
+      height: 100%;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+    }
+    main.postman progress {
+      max-width: 200px;
+    }
+    main.postman .percent {
+      font-family: courier;
+      font-size: smaller;
+    }
+  </style>
 </head>
 <body>
-  <div class="postman loader">
-    <progress value="0" max="100"></progress>
-    <span class="percentage"></span>
-   </div>
-  </div>
+  <main class="postman">
+    <label>
+      <progress id="progress" value="0" max="100"></progress>
+    </label>
+  </main>
 </body>
 </html>
 ```
@@ -36,8 +53,9 @@ progress bar is removed once the delivery is complete:
 ```typescript
 import postman, { item } from "postman";
 document.addEventListener("DOMContentLoaded", () => {
-  const bar = document.querySelector("progress");
-  const span = document.querySelector(".percentage");
+  const postman = document.querySelector("main.postman");
+  const bar = postman.querySelector("progress");
+  const span = postman.querySelector(".percent");
   const delivery = postman(
     item.font("Kanit Regular", "url(/fonts/kanit-regular.ttf)"),
     item.script("/js/app.js"),
@@ -45,7 +63,7 @@ document.addEventListener("DOMContentLoaded", () => {
     item.css("/css/app.css"),
     item.progress((percent) => {
       bar.value = percent;
-      span.innerText = `${percent}%`;
+      bar.innerText = span.innerText = `${percent}%`;
     })
   ).deliver();
 
@@ -54,9 +72,8 @@ document.addEventListener("DOMContentLoaded", () => {
     package.fonts.forEach((font) => documents.fonts.add(font));
     package.scripts.forEach((script) => document.body.appendChild(script));
     package.css.forEach((css) => document.head.appendChild(css));
-    /* Replace progress bar */
-    bar.remove();
-    span.remove();
+    /* Replace loading screen */
+    postman.remove();
   });
 });
 ```
