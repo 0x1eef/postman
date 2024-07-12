@@ -1,72 +1,74 @@
-import type { Item, FontItem } from './postman/item';
-import item from './postman/item';
-import request from './postman/request';
+import type { Item, FontItem } from "./postman/item";
+import item from "./postman/item";
+import request from "./postman/request";
 
-type Postman = { deliver: () => Promise<Package> };
-type Args = Array<Item | FontItem | Function>
+interface Postman {
+  deliver: () => Promise<Package>;
+}
+type Args = Array<Item | FontItem | ((n: number) => number)>;
 type Items = Array<Item | FontItem>;
-type Package = {
-  fonts: FontFace[]
-  images: HTMLElement[]
-  css: HTMLElement[]
-  scripts: HTMLElement[]
-  json: HTMLElement[]
-};
+interface Package {
+  fonts: FontFace[];
+  images: HTMLElement[];
+  css: HTMLElement[];
+  scripts: HTMLElement[];
+  json: HTMLElement[];
+}
 
-function parseArgs(args: Args): [Items, Function] {
+function parseArgs(args: Args): [Items, (n: number) => number] {
   const items: Items = [];
-  let callback: Function = (n: number) => n
-  args.forEach((item) => {
-    if (typeof item === 'function') {
-      callback = item;
+  let progresscb = (n: number): number => n;
+  args.forEach(item => {
+    if (typeof item === "function") {
+      progresscb = item;
     } else {
       items.push(item);
     }
   });
-  return [items, callback];
+  return [items, progresscb];
 }
 
 export { item };
 
-export default function (...args: Args) {
+export default function (...args: Args): Postman {
   const self: Postman = Object.create(null);
   const result: Package = { fonts: [], images: [], css: [], scripts: [], json: [] };
-  const [items, callback] = parseArgs(args);
-  items.sort((i1, i2) => i1.priority >= i2.priority ? 1 : -1);
+  const [items, progresscb] = parseArgs(args);
+  items.sort((i1, i2) => (i1.priority >= i2.priority ? 1 : -1));
 
   let index = 0;
-  const onProgress = <T>(el: T) => {
+  const onProgress = <T>(el: T): T => {
     index++;
     if (index <= items.length) {
-      callback(100 * (index / items.length));
+      progresscb(100 * (index / items.length));
     }
     return el;
   };
 
-  const spawnRequests = () => {
-    const reqs = items.map((item: Item | FontItem) => {
-      if ('fontFamily' in item) {
+  const spawnRequests = (): Array<Promise<Package | null>> => {
+    const reqs = items.map(async (item: Item | FontItem) => {
+      if ("fontFamily" in item) {
         const req = request.font;
-        return req(item)
-          .then((el) => onProgress<FontFace>(el))
-          .then((font) => result.fonts.push(font))
+        return await req(item)
+          .then(el => onProgress<FontFace>(el))
+          .then(font => result.fonts.push(font))
           .then(() => result);
-      } else if(item.requestId !== 'font' && item.group !== 'fonts') {
+      } else if (item.requestId !== "font" && item.group !== "fonts") {
         const req = request[item.requestId];
         const ary = result[item.group];
-        return req(item)
-          .then((el) => onProgress<HTMLElement>(el))
-          .then((el) => ary.push(el))
+        return await req(item)
+          .then(el => onProgress<HTMLElement>(el))
+          .then(el => ary.push(el))
           .then(() => result);
+      } else {
+        return null;
       }
-      /* unreachable */
-      return null;
     });
-    return reqs as Array<Promise<Package>>;
+    return reqs;
   };
 
   self.deliver = async () => {
-    await Promise.all<Package>(spawnRequests());
+    await Promise.all(spawnRequests());
     return result;
   };
 
