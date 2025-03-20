@@ -1,30 +1,28 @@
-import type { Item, FontItem } from "./item";
-
 export default {
-  async font(item: FontItem): Promise<FontFace> {
-    const { fontFamily, href } = item;
-    return await new FontFace(fontFamily, href).load();
+  font(item, options = {}) {
+    const { fontFamily, props: { url } } = item;
+    return new FontFace(fontFamily, `url(${url})`).load();
   },
 
-  async script(item: Item, options: RequestInit = {}): Promise<HTMLElement> {
+  script(item, options = {}) {
     const { href } = item;
-    return await fetch(href, options)
+    return fetch(href, options)
       .then(async res => await res.text())
       .then(text => ({ type: "application/javascript", text }))
       .then(props => Object.assign(document.createElement("script"), props));
   },
 
-  async css(item: Item, options: RequestInit = {}): Promise<HTMLElement> {
+  css(item, options = {}) {
     const { href } = item;
-    return await fetch(href, options)
+    return fetch(href, options)
       .then(async res => await res.text())
       .then(text => ({ innerText: text }))
       .then(props => Object.assign(document.createElement("style"), props));
   },
 
-  async image(item: Item): Promise<HTMLElement> {
+  image(item, options = {}) {
     const { href } = item;
-    return await new Promise<HTMLElement>((resolve, reject) => {
+    return new Promise((resolve, reject) => {
       const el = document.createElement("img");
       el.onload = () => resolve(el);
       el.onerror = reject;
@@ -32,10 +30,10 @@ export default {
     });
   },
 
-  async json(item: Item, options: RequestInit = {}): Promise<HTMLElement> {
+  json(item, options = {}) {
     const { href } = item;
-    return await fetch(href, options)
-      .then(async res => await res.text())
+    return fetch(href, options)
+      .then(res => res.text())
       .then(text => ({ type: "application/json", text }))
       .then(props => Object.assign(props, item.props != null || {}))
       .then(props => Object.assign(document.createElement("script"), props));

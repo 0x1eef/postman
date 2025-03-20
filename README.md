@@ -1,93 +1,77 @@
 ## About
 
-Postman delivers the assets of a web page. <br>
-The library is typically paired with a progress
-bar that reports progress to the client.
+Postman is a lightweight library that can download the
+assets of a web page asynchronously. A classic use-case
+might be a progress bar that is updated as assets are
+downloaded. Assets are downloaded in the order they are
+given &ndash; and divided into five categories: fonts,
+scripts, text, images, and stylesheets.
 
-## Examples
+## Example
 
-### Progress bar
+### Postman
 
-The following example delivers fonts, scripts, images
-and stylesheets with the help of a progress bar. The
-progress bar is removed once the delivery is complete:
+#### EventTarget
 
-**index.html**
+The [Postman]() function returns an object that extends
+the
+[EventTarget](https://developer.mozilla.org/en-US/docs/Web/API/EventTarget)
+interface. The object can be used to listen for the `progress`
+event, and the `deliver` method initiates the download of assets.
+The `deliver` method returns a Promise that resolves to an object
+that contains the downloaded assets. The assets are then ready to
+be inserted into the DOM:
 
-```html
-<!DOCTYPE html>
-<html>
-<head>
-  <title>Postman</title>
-  <script type="module" src="delivery.js"></script>
-  <style>
-    html, html body { height: 100%; }
-    main.postman {
-      height: 100%;
-      display: flex;
-      flex-direction: column;
-      justify-content: center;
-      align-items: center;
-    }
-    main.postman progress {
-      max-width: 200px;
-    }
-    main.postman .percent {
-      font-family: courier;
-      font-size: smaller;
-    }
-  </style>
-</head>
-<body>
-  <main class="postman">
-    <label>
-      <progress id="progress" value="0" max="100"></progress>
-    </label>
-  </main>
-</body>
-</html>
+```javascript
+import Postman, { item } from "postman";
+
+(async function() {
+  const postman = Postman(
+    item.font("Roboto Regular", {url "/fonts/roboto-regular.ttf"}),
+    item.script("/scripts/main.js")
+  )
+  postman.addEventListener("progress", (event) => {
+    console.log(`Progress: ${event.detail.percent}%`)
+  })
+
+  const parcel = await postman.deliver()
+  parcel.fonts.forEach((font) => document.fonts.add(font))
+  parcel.scripts.forEach((script) => document.body.appendChild(script))
+  console.log("Delivery complete")
+})()
 ```
 
-**delivery.js**
+#### Error
 
-```typescript
-import postman, { item } from "postman";
-document.addEventListener("DOMContentLoaded", () => {
-  const postman = document.querySelector("main.postman");
-  const bar = postman.querySelector("progress");
-  const span = postman.querySelector(".percent");
-  const delivery = postman(
-    item.font("Kanit Regular", "url(/fonts/kanit-regular.ttf)"),
-    item.script("/js/app.js"),
-    item.image("/images/app.png"),
-    item.css("/css/app.css"),
-    item.progress((percent) => {
-      bar.value = percent;
-      bar.innerText = span.innerText = `${percent}%`;
-    })
-  ).deliver();
+When an error occurs during the download of an asset, an "error" event
+will be emitted. The event object contains the item that caused the error,
+alongside an error message:
 
-  delivery.then((package) => {
-    /* Add page assets */
-    package.fonts.forEach((font) => documents.fonts.add(font));
-    package.scripts.forEach((script) => document.body.appendChild(script));
-    package.css.forEach((css) => document.head.appendChild(css));
-    /* Replace loading screen */
-    postman.remove();
-  });
-});
-```
+```javascript
+import Postman, { item } from "postman";
+
+(async function() {
+  const postman = Postman(
+    item.font("Roboto Regular", {url "/path/to/error"}),
+  )
+  postman.addEventListener("error", (event) => {
+    console.error(`Error: ${event.detail.item} - ${event.detail.message}`)
+  })
+  const parcel = await postman.deliver()
+})()
+
+```javascript
 
 ## See also
 
 * [https://al-quran.reflectslight.io/](https://al-quran.reflectslight.io) <br>
   Delivers all of its assets with Postman
-  
+
 ## Sources
 
-* [GitHub](https://github.com/0x1eef/postman)
-* [GitLab](https://gitlab.com/0x1eef/postman)
-* [brew.bsd.cafe/@0x1eef](https://brew.bsd.cafe/@0x1eef)
+* [github.com/@0x1eef](https://github.com/0x1eef/postman)
+* [gitlab.com/@0x1eef](https://gitlab.com/0x1eef/postman)
+* [brew.bsd.cafe/@0x1eef](https://brew.bsd.cafe/0x1eef/postman)
 
 ## License
 
