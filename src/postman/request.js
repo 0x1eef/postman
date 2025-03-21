@@ -1,7 +1,7 @@
 export default {
   font(item, options = {}) {
-    const { fontFamily, props: { url } } = item;
-    return new FontFace(fontFamily, `url(${url})`).load();
+    const { family, source, props } = item;
+    return new FontFace(family, source, props).load();
   },
 
   script(item, options = {}) {

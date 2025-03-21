@@ -1,10 +1,11 @@
 export default {
-  font(fontFamily, props = {}) {
+  font(family, source, props = {}) {
     return {
       priority: 1,
       group: "fonts",
       requestId: "font",
-      fontFamily,
+      family,
+      source,
       props
     };
   },
