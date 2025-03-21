@@ -1,10 +1,10 @@
 export default {
-  font(href, props = {}) {
+  font(fontFamily, props = {}) {
     return {
       priority: 1,
       group: "fonts",
       requestId: "font",
-      href,
+      fontFamily,
       props
     };
   },
