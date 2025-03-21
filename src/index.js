@@ -3,13 +3,13 @@ import request from "./postman/request";
 
 export { item };
 
-export default function(...items) {
+export default function(...allItems) {
   const self    = new EventTarget();
   const parcel  = { fonts: [], images: [], css: [], scripts: [], json: [] };
   const byGroup = {};
 
-  for (let i = 0; i < items.length; i++) {
-    const item = items[i];
+  for (let i = 0; i < allItems.length; i++) {
+    const item = allItems[i];
     byGroup[item.group] = byGroup[item.group] || [];
     byGroup[item.group].push(item);
   }
@@ -21,7 +21,7 @@ export default function(...items) {
         const item = items[index];
         const req = request[item.requestId];
         const ary = parcel[item.group];
-        const percentage = 100 * (index / items.length);
+        const percentage = 100 * (index / allItems.length);
         await req(item)
           .then(el => ary.push(el))
           .then(() => dispatchProgress(self, item, percentage))
