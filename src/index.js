@@ -19,12 +19,12 @@ export default function(...items) {
       const items = byGroup[group];
       for (let index = 0; index < items.length; index++) {
         const item = items[index];
-        const req  = request[item.requestId];
-        const ary  = parcel[item.group];
-        const percent = 100 * (index / items.length);
+        const req = request[item.requestId];
+        const ary = parcel[item.group];
+        const percentage = 100 * (index / items.length);
         await req(item)
           .then(el => ary.push(el))
-          .then(() => dispatchProgress(self, item, percent))
+          .then(() => dispatchProgress(self, item, percentage))
           .catch((error) => dispatchError(self, item, error))
       }
     }
@@ -43,11 +43,11 @@ function dispatchError(self, item, error) {
   );
 }
 
-function dispatchProgress(self, item, percent) {
+function dispatchProgress(self, item, percentage) {
   self.dispatchEvent(
     new CustomEvent(
       "progress",
-      { detail: { item, percent } }
+      { detail: { item, percentage } }
     )
   );
 }
