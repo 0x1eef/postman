@@ -15,13 +15,14 @@ export default function(...allItems) {
   }
 
   self.deliver = async () => {
+    let i = 1;
     for (let group of Object.keys(byGroup)) {
       const items = byGroup[group];
-      for (let index = 0; index < items.length; index++) {
-        const item = items[index];
+      for (let j = 0; index < items.length; index++) {
+        const item = items[j];
         const req = request[item.requestId];
         const ary = parcel[item.group];
-        const percentage = 100 * (index / allItems.length);
+        const percentage = 100 * (i++ / allItems.length);
         await req(item)
           .then(el => ary.push(el))
           .then(() => dispatchProgress(self, item, percentage))
