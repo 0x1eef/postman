@@ -17,13 +17,14 @@ export default function(...items) {
   self.deliver = async () => {
     for (let group of Object.keys(byGroup)) {
       const items = byGroup[group];
-      for (let i = 0; i < items.length; i++) {
-        const item = items[i];
+      for (let index = 0; index < items.length; index++) {
+        const item = items[index];
         const req  = request[item.requestId];
         const ary  = parcel[item.group];
+        const percent = 100 * (index / items.length);
         await req(item)
           .then(el => ary.push(el))
-          .then(() => dispatchProgress(self, item, i))
+          .then(() => dispatchProgress(self, item, percent))
           .catch((error) => dispatchError(self, item, error))
       }
     }
@@ -42,11 +43,11 @@ function dispatchError(self, item, error) {
   );
 }
 
-function dispatchProgress(self, item, index) {
+function dispatchProgress(self, item, percent) {
   self.dispatchEvent(
     new CustomEvent(
       "progress",
-      { detail: { item, percent: 100 * (index / items.length) } }
+      { detail: { item, percent } }
     )
   );
 }
