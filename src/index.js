@@ -18,7 +18,7 @@ export default function(...allItems) {
     let i = 1;
     for (let group of Object.keys(byGroup)) {
       const items = byGroup[group];
-      for (let j = 0; index < items.length; index++) {
+      for (let j = 0; j < items.length; j++) {
         const item = items[j];
         const req = request[item.requestId];
         const ary = parcel[item.group];
