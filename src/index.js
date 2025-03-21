@@ -8,24 +8,6 @@ export default function(...items) {
   const parcel  = { fonts: [], images: [], css: [], scripts: [], json: [] };
   const byGroup = {};
 
-  function dispatchError(item, error) {
-    self.dispatchEvent(
-      new CustomEvent(
-        "error",
-        { detail: { item, error } }
-      )
-    );
-  }
-
-  function dispatchProgress(item, i) {
-    self.dispatchEvent(
-      new CustomEvent(
-        "progress",
-        { detail: { item, percent: 100 * (i / items.length) } }
-      )
-    );
-  }
-
   for (let i = 0; i < items.length; i++) {
     const item = items[i];
     byGroup[item.group] = byGroup[item.group] || [];
@@ -41,12 +23,30 @@ export default function(...items) {
         const ary  = parcel[item.group];
         await req(item)
           .then(el => ary.push(el))
-          .then(() => dispatchProgress(item, i))
-          .catch((error) => dispatchError(item, error))
+          .then(() => dispatchProgress(self, item, i))
+          .catch((error) => dispatchError(self, item, error))
       }
     }
     return parcel;
   };
 
   return self;
+}
+
+function dispatchError(self, item, error) {
+  self.dispatchEvent(
+    new CustomEvent(
+      "error",
+      { detail: { item, error } }
+    )
+  );
+}
+
+function dispatchProgress(self, item, index) {
+  self.dispatchEvent(
+    new CustomEvent(
+      "progress",
+      { detail: { item, percent: 100 * (index / items.length) } }
+    )
+  );
 }
