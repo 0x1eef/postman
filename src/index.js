@@ -8,13 +8,25 @@ export default function(...allItems) {
   const parcel  = { fonts: [], images: [], css: [], scripts: [], json: [] };
   const byGroup = {};
 
-  for (let i = 0; i < allItems.length; i++) {
-    const item = allItems[i];
-    byGroup[item.group] = byGroup[item.group] || [];
-    byGroup[item.group].push(item);
+  function dispatchError(item, error) {
+    self.dispatchEvent(
+      new CustomEvent(
+        "error",
+        { detail: { item, error } }
+      )
+    );
   }
 
-  async function request(items, i) {
+  function dispatchProgress(item, percentage) {
+    self.dispatchEvent(
+      new CustomEvent(
+        "progress",
+        { detail: { item, percentage } }
+      )
+    );
+  }
+
+  async function request(self, items, i) {
     for (let j = 0; j < items.length; j++) {
       const item = items[j];
       const req = request[item.requestId];
@@ -22,9 +34,15 @@ export default function(...allItems) {
       const percentage = 100 * (i / allItems.length);
       await req(item)
         .then(el => ary.push(el))
-        .then(() => dispatchProgress(self, item, percentage))
-        .catch((error) => dispatchError(self, item, error))
+        .then(() => dispatchProgress(item, percentage))
+        .catch((error) => dispatchError(item, error))
     }
+  }
+
+  for (let i = 0; i < allItems.length; i++) {
+    const item = allItems[i];
+    byGroup[item.group] = byGroup[item.group] || [];
+    byGroup[item.group].push(item);
   }
 
   self.deliver = async () => {
@@ -36,22 +54,4 @@ export default function(...allItems) {
   };
 
   return self;
-}
-
-function dispatchError(self, item, error) {
-  self.dispatchEvent(
-    new CustomEvent(
-      "error",
-      { detail: { item, error } }
-    )
-  );
-}
-
-function dispatchProgress(self, item, percentage) {
-  self.dispatchEvent(
-    new CustomEvent(
-      "progress",
-      { detail: { item, percentage } }
-    )
-  );
 }
