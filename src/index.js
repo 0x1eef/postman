@@ -14,21 +14,24 @@ export default function(...allItems) {
     byGroup[item.group].push(item);
   }
 
+  async function request(items, i) {
+    for (let j = 0; j < items.length; j++) {
+      const item = items[j];
+      const req = request[item.requestId];
+      const ary = parcel[item.group];
+      const percentage = 100 * (i / allItems.length);
+      await req(item)
+        .then(el => ary.push(el))
+        .then(() => dispatchProgress(self, item, percentage))
+        .catch((error) => dispatchError(self, item, error))
+    }
+  }
+
   self.deliver = async () => {
     let i = 1;
-    for (let group of Object.keys(byGroup)) {
-      const items = byGroup[group];
-      for (let j = 0; j < items.length; j++) {
-        const item = items[j];
-        const req = request[item.requestId];
-        const ary = parcel[item.group];
-        const percentage = 100 * (i++ / allItems.length);
-        await req(item)
-          .then(el => ary.push(el))
-          .then(() => dispatchProgress(self, item, percentage))
-          .catch((error) => dispatchError(self, item, error))
-      }
-    }
+    Object
+      .keys(byGroup)
+      .forEach((group) => request(byGroup[group], i++));
     return parcel;
   };
 
