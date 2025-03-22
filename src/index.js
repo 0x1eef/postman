@@ -26,7 +26,7 @@ export default function(...allItems) {
     );
   }
 
-  async function request(self, items, i) {
+  async function request(items, i) {
     for (let j = 0; j < items.length; j++) {
       const item = items[j];
       const req = request[item.requestId];
