@@ -41,26 +41,6 @@ import Postman, { item } from "postman";
 })()
 ```
 
-#### Error
-
-When an error occurs during the download of an asset, an "error" event
-will be dispatched. The event object contains the item that caused the error,
-alongside an error message:
-
-```javascript
-import Postman, { item } from "postman";
-
-(async function() {
-  const postman = Postman(
-    item.font("Roboto Regular", {url "/path/to/error"}),
-  )
-  postman.addEventListener("error", (event) => {
-    console.error(event.detail.message)
-  })
-  const parcel = await postman.deliver()
-})()
-```
-
 ## See also
 
 * [https://al-quran.reflectslight.io/](https://al-quran.reflectslight.io) <br>
