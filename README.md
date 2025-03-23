@@ -31,7 +31,7 @@ import Postman, { item } from "postman";
     item.script("/scripts/main.js")
   )
   postman.addEventListener("progress", (event) => {
-    console.log(`Progress: ${event.detail.percent}%`)
+    console.log(`${event.detail.percentage}%`)
   })
 
   const parcel = await postman.deliver()
