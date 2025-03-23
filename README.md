@@ -3,41 +3,58 @@
 Postman is a lightweight library that can download the
 assets of a web page asynchronously. A classic use-case
 might be a progress bar that is updated as assets are
-downloaded. Assets are downloaded in the order they are
-given &ndash; and divided into five categories: fonts,
-scripts, text, images, and stylesheets.
+downloaded.
 
 ## Example
 
 ### Postman
 
-#### EventTarget
+#### Deliver
 
-The [Postman]() function returns an object that extends
-the
-[EventTarget](https://developer.mozilla.org/en-US/docs/Web/API/EventTarget)
-interface. The object can be used to listen for the `progress`
-event, and the `deliver` method initiates the download of assets.
-The `deliver` method returns a Promise that resolves to an object
-that contains the downloaded assets. The assets are then ready to
-be inserted into the DOM:
+The [deliver]() method returns a Promise that resolves to an object
+that contains the items that have been downloaded. The items are then 
+ready to be inserted into the DOM. Typically `document.fonts` is used 
+to add  fonts, `document.head` is used to append styles, and `document.body` 
+is used to append scripts:
 
 ```javascript
 import Postman, { item } from "postman";
 
-(async function() {
-  const postman = Postman(
-    item.font("Roboto Regular", {url "/fonts/roboto-regular.ttf"}),
-    item.script("/scripts/main.js")
-  )
-  postman.addEventListener("progress", (event) => {
-    console.log(`${event.detail.percentage}%`)
-  })
+const items = [
+  item.font("Roboto Regular", "/fonts/roboto-regular.ttf"),
+  item.css("/css/main.css"),
+  item.script("/js/main.js")
+]
 
+(async function() {
+  const postman = Postman(...items)
   const parcel = await postman.deliver()
   parcel.fonts.forEach((font) => document.fonts.add(font))
+  parcel.css.forEach((style) => document.head.appendChild(style))
   parcel.scripts.forEach((script) => document.body.appendChild(script))
-  console.log("Delivery complete")
+})()
+```
+
+#### Progress
+
+The [Postman]() function returns an object that extends the [EventTarget]()
+interface. The "progress" event is dispatched each time an asset is downloaded,
+and the event includes the overall progress of the download and the item that
+has been downloaded:
+
+```javascript
+import Postman, { item } from "postman";
+
+const items = [
+  item.font("Roboto Regular", "/fonts/roboto-regular.ttf"),
+  item.css("/css/main.css"),
+  item.script("/js/main.js")
+]
+
+(function() {
+  const postman = Postman(...items)
+  postman.addEventListener("progress", (event) => console.log(event.detail))
+  postman.deliver()
 })()
 ```
 

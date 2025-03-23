@@ -2,20 +2,14 @@
   "name": "postman",
   "version": "0.1.0",
   "description": "Delivers the assets of a web page",
-  "main": "dist/index.js",
-  "types": [
-    "dist/index.d.ts"
-  ],
-  "scripts": {
-    "prepare": "npm run build",
-    "build": "npx tsc",
-    "build-docs": "npx jsdoc src/ -d docs/"
-    "tsc": "npx tsc -- --noEmit",
-    "eslint": "npx eslint -- src/*.js src/**/*.js",
-  },
+  "main": "src/index.js",
   "repository": {
     "type": "git",
     "url": "git+https://github.com/0x1eef/postman.git"
+  },
+  "scripts": {
+    "build-docs": "npx jsdoc src/ -d docs/"
+    "eslint": "npx eslint -- src/*.js src/**/*.js",
   },
   "author": "0x1eef",
   "license": "0BSDL",
@@ -24,8 +18,6 @@
     "eslint": "^8.57.0",
     "eslint-config-prettier": "^9.1.0",
     "eslint-plugin-prettier": "^5.1.3",
-    "jsdoc": "^4.0.4",
-    "ts-standard": "^12.0.2",
-    "typescript": "^4.5"
+    "jsdoc": "^4.0.4"
   }
 }
