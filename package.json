@@ -7,10 +7,11 @@
     "dist/index.d.ts"
   ],
   "scripts": {
-    "build": "npm exec tsc",
     "prepare": "npm run build",
-    "tsc": "npm exec tsc -- --noEmit",
-    "eslint": "npm exec eslint -- src/*.ts src/**/*.ts"
+    "build": "npx tsc",
+    "build-docs": "npx jsdoc src/ -d docs/"
+    "tsc": "npx tsc -- --noEmit",
+    "eslint": "npx eslint -- src/*.js src/**/*.js",
   },
   "repository": {
     "type": "git",
