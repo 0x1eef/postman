@@ -8,8 +8,8 @@
     "url": "git+https://github.com/0x1eef/postman.git"
   },
   "scripts": {
-    "build-docs": "npx jsdoc src/ -d docs/"
-    "eslint": "npx eslint -- src/*.js src/**/*.js",
+    "build-docs": "npx jsdoc src/ -d docs/",
+    "eslint": "npx eslint -- src/*.js src/**/*.js"
   },
   "author": "0x1eef",
   "license": "0BSDL",
