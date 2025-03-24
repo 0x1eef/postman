@@ -45,7 +45,7 @@ export function Postman(...allItems) {
     byGroup[item.group].push(item)
   }
 
-  self.deliver = async() => {
+  self.deliver = async () => {
     let i = 1
     Object
       .keys(byGroup)
