@@ -3,7 +3,7 @@ import request from './postman/request'
 
 export { item }
 
-export default function(...allItems) {
+export function Postman(...allItems) {
   const self = new EventTarget()
   const parcel = { fonts: [], images: [], css: [], scripts: [], json: [] }
   const byGroup = {}

@@ -18,7 +18,7 @@ to add  fonts, `document.head` is used to append styles, and `document.body`
 is used to append scripts:
 
 ```javascript
-import Postman, { item } from "postman";
+import { Postman, item } from "postman";
 
 const items = [
   item.font("Roboto Regular", "/fonts/roboto-regular.ttf"),
@@ -43,7 +43,7 @@ and the event includes the overall progress of the download and the item that
 has been downloaded:
 
 ```javascript
-import Postman, { item } from "postman";
+import { Postman, item } from "postman";
 
 const items = [
   item.font("Roboto Regular", "/fonts/roboto-regular.ttf"),
