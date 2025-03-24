@@ -1,37 +1,37 @@
-import item from "./postman/item";
-import request from "./postman/request";
+import item from './postman/item'
+import request from './postman/request'
 
-export { item };
+export { item }
 
 export default function(...allItems) {
-  const self    = new EventTarget();
-  const parcel  = { fonts: [], images: [], css: [], scripts: [], json: [] };
-  const byGroup = {};
+  const self = new EventTarget()
+  const parcel = { fonts: [], images: [], css: [], scripts: [], json: [] }
+  const byGroup = {}
 
   function dispatchError(item, error) {
     self.dispatchEvent(
       new CustomEvent(
-        "error",
+        'error',
         { detail: { item, error } }
       )
-    );
+    )
   }
 
   function dispatchProgress(item, percentage) {
     self.dispatchEvent(
       new CustomEvent(
-        "progress",
+        'progress',
         { detail: { item, percentage } }
       )
-    );
+    )
   }
 
-  async function request(items, i) {
+  async function fetch(items, i) {
     for (let j = 0; j < items.length; j++) {
-      const item = items[j];
-      const req = request[item.requestId];
-      const ary = parcel[item.group];
-      const percentage = 100 * (i / allItems.length);
+      const item = items[j]
+      const req = request[item.requestId]
+      const ary = parcel[item.group]
+      const percentage = 100 * (i / allItems.length)
       await req(item)
         .then(el => ary.push(el))
         .then(() => dispatchProgress(item, percentage))
@@ -40,18 +40,18 @@ export default function(...allItems) {
   }
 
   for (let i = 0; i < allItems.length; i++) {
-    const item = allItems[i];
-    byGroup[item.group] = byGroup[item.group] || [];
-    byGroup[item.group].push(item);
+    const item = allItems[i]
+    byGroup[item.group] = byGroup[item.group] || []
+    byGroup[item.group].push(item)
   }
 
-  self.deliver = async () => {
-    let i = 1;
+  self.deliver = async() => {
+    let i = 1
     Object
       .keys(byGroup)
-      .forEach((group) => request(byGroup[group], i++));
-    return parcel;
-  };
+      .forEach((group) => fetch(byGroup[group], i++))
+    return parcel
+  }
 
-  return self;
+  return self
 }
