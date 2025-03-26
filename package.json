@@ -1,7 +1,7 @@
 {
-  "name": "postman",
+  "name": "@0x1eef/postman",
   "version": "0.1.0",
-  "description": "Delivers the assets of a web page",
+  "description": "Delivers the assets of a web page asynchronously",
   "main": "src/index.js",
   "repository": {
     "type": "git",
@@ -20,5 +20,6 @@
     "eslint-config-standard": "^17.1.0",
     "eslint-plugin-prettier": "^5.1.3",
     "jsdoc": "^4.0.4"
-  }
+  },
+  "publishConfig": { "access": "public" }
 }
