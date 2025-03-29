@@ -1,7 +1,7 @@
 export default {
   font(item, _options = {}) {
-    const { family, source, props } = item
-    return new FontFace(family, source, props).load()
+    const { family, href, props } = item
+    return new FontFace(family, `url(${href})`, props).load()
   },
 
   image(item, _options = {}) {
@@ -37,4 +37,22 @@ export default {
       .then(text => ({ type: 'application/json', text, ...props }))
       .then(props => Object.assign(document.createElement('script'), props))
   }
+}
+
+function BadResponseError(res) {
+  const error = new Error()
+  error.name = 'BadResponseError'
+  error.message = `Bad response: ${res.status} ${res.statusText}`
+  error.response = res
+  return error
+}
+
+function fetch(href, options) {
+  return window.fetch(href, options).then(res => {
+    if (res.ok) {
+      return res
+    } else {
+      throw BadResponseError(res)
+    }
+  })
 }

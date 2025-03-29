@@ -11,11 +11,12 @@ downloaded.
 
 #### Deliver
 
-The [deliver]() method returns a Promise that resolves to an object
-that contains the items that have been downloaded. The items are then 
-ready to be inserted into the DOM. Typically `document.fonts` is used 
-to add  fonts, `document.head` is used to append styles, and `document.body` 
-is used to append scripts:
+The "deliver" method initiates the download of a parcel that includes
+fonts, stylesheets and scripts. Each item an item is downloaded, the
+progress event is dispatched. When all items have been downloaded, the
+parcel is ready to be inserted into the DOM. Typically `document.fonts`
+is used  to add  fonts, `document.head` is used to append styles, and
+`document.body` is used to append scripts:
 
 ```javascript
 import { Postman, item } from "postman";
@@ -28,19 +29,27 @@ const items = [
 
 (async function() {
   const postman = Postman(...items)
-  const parcel = await postman.deliver()
-  parcel.fonts.forEach((font) => document.fonts.add(font))
-  parcel.css.forEach((style) => document.head.appendChild(style))
-  parcel.scripts.forEach((script) => document.body.appendChild(script))
+  postman.addEventListener("progress", (event) => {
+    const { progress, parcel } = event.detail
+	console.log("progress", progress)
+	if (progress === 100) {
+	  parcel.fonts.forEach((font) => document.fonts.add(font))
+      parcel.css.forEach((style) => document.head.appendChild(style))
+      parcel.scripts.forEach((script) => document.body.appendChild(script))
+	}
+  })
+  await postman.deliver()
 })()
 ```
 
-#### Progress
+#### Error
 
-The [Postman]() function returns an object that extends the [EventTarget]()
-interface. The "progress" event is dispatched each time an asset is downloaded,
-and the event includes the overall progress of the download and the item that
-has been downloaded:
+An "error" event is dispatched when an item fails to download, and
+that includes any item that was fetched with a response code other
+than 200. The dispatched event provides access to an instance of
+[AbortController](https://developer.mozilla.org/en-US/docs/Web/API/AbortController)
+that can be used to cancel the download of the remaining items,
+otherwise the download will continue:
 
 ```javascript
 import { Postman, item } from "postman";
@@ -51,10 +60,14 @@ const items = [
   item.script("/js/main.js")
 ]
 
-(function() {
+(async function() {
   const postman = Postman(...items)
-  postman.addEventListener("progress", (event) => console.log(event.detail))
-  postman.deliver()
+  postman.addEventListener("error", (event) => {
+    const { controller } = event.detail;
+	controller.abort()
+	console.error("error encountered, download cancelled")
+  })
+  await postman.deliver()
 })()
 ```
 
