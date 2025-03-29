@@ -30,13 +30,17 @@ export function Postman(...allItems) {
   }
 
   async function fetch(item, i) {
-    const req = request[item.requestId]
-    const ary = parcel[item.group]
+    const { requestId, group } = item
+    const req = request[requestId]
+    const assets = parcel[group]
     const progress = 100 * (i / allItems.length)
-    req(item)
-      .then(el => ary.push(el))
-      .then(() => dispatchProgress(item, progress))
-      .catch((error) => dispatchError(item, error))
+    try {
+      const asset = await req(item)
+      assets.push(asset)
+      dispatchProgress(item, progress)
+    } catch (error) {
+      dispatchError(item, error)
+    }
   }
 
   self.deliver = async () => {
