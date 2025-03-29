@@ -24,7 +24,7 @@ export function Postman(...allItems) {
       self.dispatchEvent(
         new CustomEvent(
           'progress',
-          { detail: { item, parcel, progress } }
+          { detail: { item, parcel, progress, controller } }
         )
       )
   }
