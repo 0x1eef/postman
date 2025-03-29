@@ -30,7 +30,7 @@ const items = [
 const postman = Postman(...items)
 postman.addEventListener("progress", (event) => {
   const { progress, parcel } = event.detail
-  console.log("progress", progress)
+  console.info("progress", progress)
   if (progress === 100) {
     parcel.fonts.forEach((font) => document.fonts.add(font))
     parcel.css.forEach((style) => document.head.appendChild(style))
