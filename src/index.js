@@ -17,11 +17,11 @@ export function Postman(...allItems) {
     )
   }
 
-  function dispatchProgress(item, percentage) {
+  function dispatchProgress(item, progress) {
     self.dispatchEvent(
       new CustomEvent(
         'progress',
-        { detail: { item, parcel, percentage } }
+        { detail: { item, parcel, progress } }
       )
     )
   }
@@ -29,10 +29,10 @@ export function Postman(...allItems) {
   async function fetch(item, i) {
     const req = request[item.requestId]
     const ary = parcel[item.group]
-    const percentage = 100 * (i / allItems.length)
+    const progress = 100 * (i / allItems.length)
     req(item)
       .then(el => ary.push(el))
-      .then(() => dispatchProgress(item, percentage))
+      .then(() => dispatchProgress(item, progress))
       .catch((error) => dispatchError(item, error))
   }
 
