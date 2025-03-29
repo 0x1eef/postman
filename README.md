@@ -12,10 +12,10 @@ downloaded.
 #### Deliver
 
 The "deliver" method initiates the download of a parcel that includes
-fonts, stylesheets and scripts. Each item an item is downloaded, the
+fonts, stylesheets and scripts. Each time an item is downloaded, the
 progress event is dispatched. When all items have been downloaded, the
 parcel is ready to be inserted into the DOM. Typically `document.fonts`
-is used  to add  fonts, `document.head` is used to append styles, and
+is used to append fonts, `document.head` is used to append styles, and
 `document.body` is used to append scripts:
 
 ```javascript
