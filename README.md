@@ -27,7 +27,7 @@ const items = [
   item.script("/js/main.js")
 ]
 
-(async function() {
+(function() {
   const postman = Postman(...items)
   postman.addEventListener("progress", (event) => {
     const { progress, parcel } = event.detail
@@ -38,7 +38,7 @@ const items = [
       parcel.scripts.forEach((script) => document.body.appendChild(script))
 	}
   })
-  await postman.deliver()
+  postman.deliver()
 })()
 ```
 
@@ -60,14 +60,14 @@ const items = [
   item.script("/js/main.js")
 ]
 
-(async function() {
+(function() {
   const postman = Postman(...items)
   postman.addEventListener("error", (event) => {
     const { controller } = event.detail;
 	controller.abort()
 	console.error("error encountered, download cancelled")
   })
-  await postman.deliver()
+  postman.deliver()
 })()
 ```
 
