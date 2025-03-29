@@ -60,7 +60,7 @@ const items = [
 
 const postman = Postman(...items)
 postman.addEventListener("error", (event) => {
-  const { controller } = event.detail;
+  const { controller } = event.detail
   controller.abort()
   console.error("error encountered, download cancelled")
 })
