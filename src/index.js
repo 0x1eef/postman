@@ -18,12 +18,15 @@ export function Postman(...allItems) {
   }
 
   function dispatchProgress(item, progress) {
-    self.dispatchEvent(
-      new CustomEvent(
-        'progress',
-        { detail: { item, parcel, progress } }
+    if (controller.signal.aborted)
+      return
+    else
+      self.dispatchEvent(
+        new CustomEvent(
+          'progress',
+          { detail: { item, parcel, progress } }
+        )
       )
-    )
   }
 
   async function fetch(item, i) {
