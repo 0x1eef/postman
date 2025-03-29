@@ -27,19 +27,17 @@ const items = [
   item.script("/js/main.js")
 ]
 
-(function() {
-  const postman = Postman(...items)
-  postman.addEventListener("progress", (event) => {
-    const { progress, parcel } = event.detail
-	console.log("progress", progress)
-	if (progress === 100) {
-	  parcel.fonts.forEach((font) => document.fonts.add(font))
-      parcel.css.forEach((style) => document.head.appendChild(style))
-      parcel.scripts.forEach((script) => document.body.appendChild(script))
-	}
-  })
-  postman.deliver()
-})()
+const postman = Postman(...items)
+postman.addEventListener("progress", (event) => {
+  const { progress, parcel } = event.detail
+  console.log("progress", progress)
+  if (progress === 100) {
+    parcel.fonts.forEach((font) => document.fonts.add(font))
+    parcel.css.forEach((style) => document.head.appendChild(style))
+    parcel.scripts.forEach((script) => document.body.appendChild(script))
+  }
+})
+postman.deliver()
 ```
 
 #### Error
@@ -60,15 +58,13 @@ const items = [
   item.script("/js/main.js")
 ]
 
-(function() {
-  const postman = Postman(...items)
-  postman.addEventListener("error", (event) => {
-    const { controller } = event.detail;
-	controller.abort()
-	console.error("error encountered, download cancelled")
-  })
-  postman.deliver()
-})()
+const postman = Postman(...items)
+postman.addEventListener("error", (event) => {
+  const { controller } = event.detail;
+  controller.abort()
+  console.error("error encountered, download cancelled")
+})
+postman.deliver()
 ```
 
 ## See also
