@@ -69,6 +69,8 @@ postman.deliver()
 
 ## See also
 
+* [https://0x1eef.github.io/](https://0x1eef.github.io) <br>
+  Delivers assets with Postman
 * [https://al-quran.reflectslight.io/](https://al-quran.reflectslight.io) <br>
   Delivers all of its assets with Postman
 
