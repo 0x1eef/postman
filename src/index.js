@@ -7,6 +7,7 @@ export function Postman(...allItems) {
   const self = new EventTarget()
   const parcel = { fonts: [], images: [], css: [], scripts: [], json: [] }
   const controller = new AbortController()
+  let count = 0;
 
   function dispatchError(item, error) {
     self.dispatchEvent(
@@ -29,13 +30,13 @@ export function Postman(...allItems) {
       )
   }
 
-  async function fetch(item, i) {
+  async function fetch(item) {
     const { requestId, group } = item
     const req = request[requestId]
     const assets = parcel[group]
-    const progress = 100 * (i / allItems.length)
     try {
       const asset = await req(item)
+      const progress = 100 * (++count / allItems.length)
       assets.push(asset)
       dispatchProgress(item, progress)
     } catch (error) {
@@ -48,7 +49,7 @@ export function Postman(...allItems) {
       if (controller.signal.aborted) {
         break
       } else {
-        await fetch(allItems[i], i+1)
+        fetch(allItems[i])
       }
     }
     return parcel
