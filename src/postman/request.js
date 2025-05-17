@@ -5,37 +5,50 @@ export default {
   },
 
   image(item, _options = {}) {
-    const { href, props } = item
+    const { href, props: { dataset, ...rest } } = item
+    const img = document.createElement('img')
     return new Promise((resolve, reject) => {
-      const el = Object.assign(document.createElement('img'), props)
-      el.onload = () => resolve(el)
-      el.onerror = reject
-      el.src = href
+      img.onload = () => resolve(el)
+      img.onerror = reject
+      img.src = href
+      Object.assign(img, rest)
+      Object.assign(img.dataset, dataset)
     })
   },
 
   script(item, options = {}) {
-    const { href, props } = item
+    const { href, props: { dataset, ...rest } } = item
+    const script = document.createElement('script')
     return fetch(href, options)
       .then(async res => await res.text())
-      .then(text => ({ type: 'application/javascript', text, ...props }))
-      .then(props => Object.assign(document.createElement('script'), props))
+      .then(text => Object.assign(script, { text }))
+      .then(props => Object.assign(props, { type: 'text/javascript' }))
+      .then(props => Object.assign(props, rest))
+      .then(props => Object.assign(props.dataset, dataset))
+      .then(() => script)
   },
 
   css(item, options = {}) {
-    const { href, props } = item
+    const { href, props: { dataset, ...rest } } = item
+    const style = document.createElement('style')
     return fetch(href, options)
       .then(async res => await res.text())
-      .then(text => ({ innerText: text, ...props }))
-      .then(props => Object.assign(document.createElement('style'), props))
+      .then(innerText => Object.assign(style, { innerText }))
+      .then(props => Object.assign(props, rest))
+      .then(props => Object.assign(props.dataset, dataset))
+      .then(() => style)
   },
 
   json(item, options = {}) {
-    const { href, props } = item
+    const { href, props: { dataset, ...rest } } = item
+    const script = document.createElement('script')
     return fetch(href, options)
       .then(res => res.text())
-      .then(text => ({ type: 'application/json', text, ...props }))
-      .then(props => Object.assign(document.createElement('script'), props))
+      .then(text => Object.assign(script, { text }))
+      .then(props => Object.assign(props, { type: 'application/json' }))
+      .then(props => Object.assign(props, rest))
+      .then(props => Object.assign(props.dataset, dataset))
+      .then(() => script)
   }
 }
 
