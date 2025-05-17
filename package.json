@@ -1,6 +1,6 @@
 {
   "name": "@0x1eef/postman",
-  "version": "0.3.0",
+  "version": "0.4.0",
   "description": "Delivers the assets of a web page asynchronously",
   "main": "src/index.js",
   "repository": {
